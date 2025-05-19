@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ election.title }} - RMU E-Voting{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">{{ election.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="text-muted">Election Details</h5>
+                        <p class="mb-2"><strong>Description:</strong> {{ election.description or 'No description provided.' }}</p>
+                        <p class="mb-2"><strong>Status:</strong> 
+                            <span class="badge {% if election.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                {% if election.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </p>
+                        <p class="mb-2"><strong>Start Date:</strong> {{ election.start_time.strftime('%B %d, %Y %I:%M %p') }}</p>
+                        <p class="mb-0"><strong>End Date:</strong> {{ election.end_time.strftime('%B %d, %Y %I:%M %p') }}</p>
+                    </div>
+
+                    <hr>
+                    
+                    <h5 class="mb-3">Candidates</h5>
+                    {% if candidates %}
+                        <div class="row g-4">
+                            {% for candidate in candidates %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <div class="mb-3">
+                                            <div class="mx-auto" style="width: 120px; height: 120px; overflow: hidden; border-radius: 50%;">
+                                                {% if candidate.photo %}
+                                                    <img src="{{ url_for('static', filename='uploads/candidates/' + candidate.photo) }}" 
+                                                         alt="{{ candidate.name }}" 
+                                                         class="img-fluid h-100 w-100" 
+                                                         style="object-fit: cover;">
+                                                {% else %}
+                                                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center h-100 w-100">
+                                                        <i class="fas fa-user fa-3x"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <h5 class="card-title mb-2">{{ candidate.name }}</h5>
+                                        {% if candidate.bio %}
+                                            <p class="text-muted small mb-3">{{ candidate.bio|truncate(100) }}</p>
+                                        {% endif %}
+                                        
+                                        <!-- Progress bar for votes -->
+                                        <div class="progress mt-3 mb-2">
+                                            <div class="progress-bar bg-primary" role="progressbar" 
+                                                 style="width: {{ candidate.percentage }}%;" 
+                                                 aria-valuenow="{{ candidate.percentage }}" 
+                                                 aria-valuemin="0" aria-valuemax="100">
+                                                {{ candidate.percentage }}%
+                                            </div>
+                                        </div>
+                                        
+                                        <p class="text-muted small mb-0">Votes: {{ candidate.votes }}</p>
+                                    </div>
+                                    
+                                    <!-- Voting buttons -->
+                                    {% if election.is_active and session.get('student_id') and not session.get('has_voted') %}
+                                        <div class="card-footer bg-transparent">
+                                            <a href="{{ url_for('voter.vote', election_id=election.id, candidate_id=candidate.id) }}" 
+                                               class="btn btn-primary w-100">
+                                                Vote
+                                            </a>
+                                        </div>
+                                    {% elif election.is_active and not session.get('student_id') %}
+                                        <div class="card-footer bg-transparent">
+                                            <a href="{{ url_for('auth.login') }}?next={{ url_for('main.election_details', election_id=election.id) }}" 
+                                               class="btn btn-primary w-100">
+                                                Login to Vote
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No candidates have been added to this election yet.
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Footer with navigation buttons -->
+                <div class="card-footer bg-light">
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Elections
+                    </a>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <a href="{{ url_for('admin.manage_election', election_id=election.id) }}" class="btn btn-outline-primary ms-2">
+                            <i class="fas fa-edit me-1"></i> Manage Election
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

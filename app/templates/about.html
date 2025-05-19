@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}About - RMU E-Voting System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header" style="background-color: #002147; color: white;">
+                <h3 class="mb-0">About RMU E-Voting System</h3>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-4 mb-4 text-center">
+                        <img src="{{ url_for('static', filename='img/rmu_logo.png') }}" alt="RMU Logo" class="img-fluid mb-3" style="max-height: 200px;">
+                        <h4>Regional Maritime University</h4>
+                        <p>E-Voting System</p>
+                    </div>
+                    <div class="col-md-8">
+                        <h4>About the System</h4>
+                        <p>The Regional Maritime University E-Voting System is a secure and transparent platform designed to facilitate university elections. It provides a convenient way for students to participate in the democratic process of electing their representatives.</p>
+                        
+                        <h4 class="mt-4">Key Features</h4>
+                        <ul>
+                            <li>Secure authentication with email OTP verification</li>
+                            <li>Real-time election results and analytics</li>
+                            <li>Transparent voting process</li>
+                            <li>Mobile-friendly interface for voting from any device</li>
+                            <li>Comprehensive admin dashboard for election management</li>
+                        </ul>
+                        
+                        <h4 class="mt-4">How It Works</h4>
+                        <ol>
+                            <li>Login with your RMU student email</li>
+                            <li>Verify your identity with your student ID</li>
+                            <li>Receive a one-time password (OTP) via email</li>
+                            <li>Access the voting dashboard</li>
+                            <li>Cast your vote in active elections</li>
+                            <li>Receive a confirmation receipt</li>
+                        </ol>
+                        
+                        <h4 class="mt-4">Security Measures</h4>
+                        <p>Our system employs multiple layers of security to ensure the integrity of the voting process:</p>
+                        <ul>
+                            <li>Two-factor authentication (Email + Student ID)</li>
+                            <li>One-time password verification</li>
+                            <li>Prevention of duplicate voting</li>
+                            <li>Secure database storage</li>
+                            <li>Audit trails for all voting activities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
