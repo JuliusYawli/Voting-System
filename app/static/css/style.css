@@ -1,0 +1,141 @@
+/* RMU E-Voting System Custom CSS */
+
+:root {
+    --rmu-blue: #002147;
+    --rmu-gold: #FFD700;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navbar customization */
+.navbar-dark {
+    background-color: var(--rmu-blue) !important;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+/* Footer customization */
+.footer {
+    background-color: var(--rmu-blue);
+    color: white;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+}
+
+/* Card customization */
+.card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+/* Button customization */
+.btn {
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--rmu-blue);
+    border-color: var(--rmu-blue);
+}
+
+.btn-primary:hover {
+    background-color: #001a38;
+    border-color: #001a38;
+}
+
+/* Custom RMU button */
+.btn-rmu {
+    background-color: var(--rmu-blue);
+    color: var(--rmu-gold);
+    border: none;
+}
+
+.btn-rmu:hover {
+    background-color: #001a38;
+    color: var(--rmu-gold);
+}
+
+/* Alert customization */
+.alert {
+    border-radius: 0.25rem;
+    border: none;
+}
+
+/* Form customization */
+.form-control {
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: var(--rmu-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 33, 71, 0.25);
+}
+
+/* Table customization */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+/* Chart container */
+.chart-container {
+    margin-bottom: 1.5rem;
+}
+
+/* Custom badges */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+}
+
+/* Login and auth pages */
+.auth-card {
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Print styles for receipts */
+@media print {
+    .navbar, .footer, .btn, form {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
+    }
+}
