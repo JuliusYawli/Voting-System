@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Election Results - RMU E-Voting System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header" style="background-color: #002147; color: white;">
+                <h3 class="mb-0">Results: {{ results.election.title }}</h3>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Election:</strong> {{ results.election.title }}</p>
+                            <p><strong>Status:</strong> {{ results.election.status|title }}</p>
+                            <p><strong>Total Votes:</strong> {{ results.total_votes }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Start Time:</strong> {{ results.election.start_time.strftime('%Y-%m-%d %H:%M') }}</p>
+                            <p><strong>End Time:</strong> {{ results.election.end_time.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if results.candidates %}
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="chart-container" style="position: relative; height:400px;">
+                            <canvas id="resultsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Vote Counts</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    {% for candidate in results.candidates %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ candidate.name }}
+                                        <span class="badge bg-primary rounded-pill">{{ candidate.votes }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Candidate</th>
+                                <th>Votes</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for candidate in results.candidates %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ candidate.name }}</td>
+                                <td>{{ candidate.votes }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ candidate.percentage }}%;" aria-valuenow="{{ candidate.percentage }}" aria-valuemin="0" aria-valuemax="100">{{ candidate.percentage }}%</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading">No Results</h5>
+                    <p class="mb-0">There are no candidates or votes for this election yet.</p>
+                </div>
+                {% endif %}
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('admin.elections_list') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Elections
+                    </a>
+                    <a href="{{ url_for('admin.election_voters', election_id=results.election.id) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-users"></i> View Voters
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if results.candidates %}
+        var ctx = document.getElementById('resultsChart').getContext('2d');
+        var resultsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for candidate in results.candidates %}'{{ candidate.name }}',{% endfor %}],
+                datasets: [{
+                    label: 'Votes',
+                    data: [{% for candidate in results.candidates %}{{ candidate.votes }},{% endfor %}],
+                    backgroundColor: [
+                        '#002147',
+                        '#FFD700',
+                        '#4CAF50',
+                        '#2196F3',
+                        '#F44336',
+                        '#9C27B0'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Also create a pie chart
+        var pieCtx = document.getElementById('pieChart');
+        if (pieCtx) {
+            var pieChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: [{% for candidate in results.candidates %}'{{ candidate.name }}',{% endfor %}],
+                    datasets: [{
+                        data: [{% for candidate in results.candidates %}{{ candidate.votes }},{% endfor %}],
+                        backgroundColor: [
+                            '#002147',
+                            '#FFD700',
+                            '#4CAF50',
+                            '#2196F3',
+                            '#F44336',
+                            '#9C27B0'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+        {% endif %}
+    });
+</script>
+{% endblock %}

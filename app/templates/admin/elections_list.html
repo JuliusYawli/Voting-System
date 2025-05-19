@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Elections - RMU E-Voting System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #002147; color: white;">
+                <h3 class="mb-0">Manage Elections</h3>
+                <a href="{{ url_for('admin.election_create') }}" class="btn" style="background-color: #FFD700; color: #002147;">
+                    <i class="fas fa-plus-circle"></i> Create New Election
+                </a>
+            </div>
+            <div class="card-body p-4">
+                {% if elections %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Candidates</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for election in elections %}
+                            <tr>
+                                <td>{{ election.title }}</td>
+                                <td>
+                                    {% if election.status == 'upcoming' %}
+                                    <span class="badge bg-info">Upcoming</span>
+                                    {% elif election.status == 'ongoing' %}
+                                    <span class="badge bg-success">Ongoing</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Completed</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ election.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ election.end_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ election.candidates.count() }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('admin.election_edit', election_id=election.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="{{ url_for('admin.candidates_list', election_id=election.id) }}" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-user-tie"></i> Candidates
+                                        </a>
+                                        <a href="{{ url_for('admin.election_results', election_id=election.id) }}" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-chart-bar"></i> Results
+                                        </a>
+                                        <a href="{{ url_for('admin.election_voters', election_id=election.id) }}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-users"></i> Voters
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ election.id }}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal{{ election.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ election.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel{{ election.id }}">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete the election <strong>{{ election.title }}</strong>?</p>
+                                                    <p class="text-danger">This action cannot be undone. All associated candidates and votes will be permanently deleted.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="{{ url_for('admin.election_delete', election_id=election.id) }}" method="POST">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">No Elections</h5>
+                    <p class="mb-0">There are no elections in the system yet. Click the "Create New Election" button to get started.</p>
+                </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

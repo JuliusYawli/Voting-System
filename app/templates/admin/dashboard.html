@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - RMU E-Voting System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header" style="background-color: #002147; color: white;">
+                <h3 class="mb-0">Admin Dashboard</h3>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading">Welcome, {{ current_user.name }}!</h5>
+                    <p class="mb-0">Email: {{ current_user.email }}</p>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white h-100" style="background-color: #002147;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title">Students</h6>
+                                        <h2 class="mb-0">{{ students_count }}</h2>
+                                    </div>
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white h-100" style="background-color: #FFD700; color: #002147;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title">Elections</h6>
+                                        <h2 class="mb-0">{{ elections_count }}</h2>
+                                    </div>
+                                    <i class="fas fa-poll fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white h-100" style="background-color: #4CAF50;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title">Candidates</h6>
+                                        <h2 class="mb-0">{{ candidates_count }}</h2>
+                                    </div>
+                                    <i class="fas fa-user-tie fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white h-100" style="background-color: #2196F3;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title">Total Votes</h6>
+                                        <h2 class="mb-0">{{ votes_count }}</h2>
+                                    </div>
+                                    <i class="fas fa-vote-yea fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Active Elections -->
+                {% if active_elections %}
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Active Elections</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for election in active_elections %}
+                                    <tr>
+                                        <td>{{ election.title }}</td>
+                                        <td>{{ election.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>{{ election.end_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('admin.election_results', election_id=election.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-chart-bar"></i> Results
+                                            </a>
+                                            <a href="{{ url_for('admin.election_voters', election_id=election.id) }}" class="btn btn-sm btn-outline-info">
+                                                <i class="fas fa-users"></i> Voters
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Recent Elections -->
+                {% if recent_elections %}
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: #002147; color: white;">
+                        <h5 class="mb-0">Recent Elections</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for election in recent_elections %}
+                                    <tr>
+                                        <td>{{ election.title }}</td>
+                                        <td>
+                                            {% if election.status == 'upcoming' %}
+                                            <span class="badge bg-info">Upcoming</span>
+                                            {% elif election.status == 'ongoing' %}
+                                            <span class="badge bg-success">Ongoing</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">Completed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ election.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>{{ election.end_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('admin.election_results', election_id=election.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-chart-bar"></i> Results
+                                            </a>
+                                            <a href="{{ url_for('admin.candidates_list', election_id=election.id) }}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-user-tie"></i> Candidates
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header" style="background-color: #002147; color: white;">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <a href="{{ url_for('admin.elections_list') }}" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-poll"></i> Manage Elections
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="{{ url_for('admin.election_create') }}" class="btn btn-outline-success w-100">
+                                    <i class="fas fa-plus-circle"></i> Create New Election
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="{{ url_for('main.index') }}" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-home"></i> View Public Site
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
