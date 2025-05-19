@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - RMU E-Voting System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-center" style="background-color: #002147; color: white;">
+                <h3 class="mb-0">Login</h3>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="RMU Logo" height="80">
+                </div>
+                
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="form-text">Enter your RMU email address (e.g., student@rmu.edu.gh)</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="user_type" class="form-label">User Type</label>
+                        <select class="form-select" id="user_type" name="user_type" required>
+                            <option value="" selected disabled>Select user type</option>
+                            <option value="student">Student</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn" style="background-color: #002147; color: #FFD700;">Continue</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center" style="background-color: #f8f9fa;">
+                <p class="mb-0">Regional Maritime University E-Voting System</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
