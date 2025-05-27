@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `admins` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
   `email` VARCHAR(100) NOT NULL UNIQUE,
-  `password_hash` VARCHAR(255) NOT NULL
+  `password_hash` VARCHAR(255) NOT NULL,
 );
 
 -- Create elections table
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `votes` (
   `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`student_id`) REFERENCES `students`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`candidate_id`) REFERENCES `candidates`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON DELETE CASCADE
+  FOREIGN KEY (`election_id`) REFERENCES `elections`(`id`) ON DELETE CASCADE,
 );
 
 -- Insert demo data: 20 fake RMU students
@@ -72,6 +72,7 @@ INSERT INTO `students` (`name`, `email`, `student_id`, `has_voted`) VALUES
 ('Victoria Asare', 'victoria.asare@rmu.edu.gh', 'RMU10018', FALSE),
 ('Joseph Ansah', 'joseph.ansah@rmu.edu.gh', 'RMU10019', FALSE),
 ('Elizabeth Agyei', 'elizabeth.agyei@rmu.edu.gh', 'RMU10020', FALSE);
+('Abdul-Majeed Abdul-Aziz','abdul.aziz@st.rmu.edu.gh','RMU10021',FALSE);
 
 -- Insert 1 admin with hashed password (admin123)
 -- Using bcrypt hash for 'admin123'
